@@ -18,17 +18,19 @@ class ContactViewSet(generics.GenericAPIView):
 
         if len(data) == 0:
             return Response(data={'message': 'Contact not found'}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            response = send_data_to_back_url(
+                data=data.get('contacts'),
+                url=data.get('back_url')
+            )
 
-        response = send_data_to_back_url(
-            data=data.get('contacts'),
-            url=data.get('back_url')
-        )
+            if response.status_code == status.HTTP_200_OK:
+                result = json.loads(response.json())
+                return Response(data=result, status=status.HTTP_200_OK)
 
-        if response.status_code == status.HTTP_200_OK:
-            result = json.loads(response.json())
-            return Response(data=result, status=status.HTTP_200_OK)
-
-        return Response(data={"message": response.content}, status=response.status_code)
+            return Response(data={"message": response.content}, status=response.status_code)
+        except Exception as e:
+            return Response(data={'message': 'Bad back_url, plz check.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MockBackUrlViewSet(generics.GenericAPIView):
