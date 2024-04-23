@@ -30,7 +30,7 @@ class ContactViewSet(generics.GenericAPIView):
 
             return Response(data={"message": response.content}, status=response.status_code)
         except Exception as e:
-            return Response(data={'message': 'Bad back_url, plz check.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data=data, status=status.HTTP_206_PARTIAL_CONTENT)
 
 
 class MockBackUrlViewSet(generics.GenericAPIView):
